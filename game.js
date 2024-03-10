@@ -1,12 +1,21 @@
-const row = 10;
-const col = 10;
+const row = 15;
+const col = 15;
 
 export const createStartGrid = () =>
   Array.from({ length: row }, () => Array(col).fill(0));
 
 export const printGrid = (grid) => {
   for (let i = 0; i < row; i++) {
-    console.log(grid[i].join(' '));
+    let rowString = '';
+    for (let j = 0; j < col; j++) {
+      if (grid[i][j] === 1) {
+        rowString += '🟩';
+      } else {
+        rowString += '⬜';
+      }
+    }
+
+    console.log(rowString);
   }
 };
 
@@ -62,17 +71,38 @@ export const game = () => {
   grid[2][2] = 1;
   grid[2][3] = 1;
   grid[2][4] = 1;
-  grid[3][4] = 1;
-  grid[1][4] = 1;
+  grid[2][5] = 1;
+  grid[2][6] = 1;
 
-  console.log('Starting');
-  printGrid(grid);
+  let round = 0;
 
-  for (let i = 0; i < 5; i++) {
-    console.log(`Round ${i + 1}`);
-    grid = nextRound(grid);
+  const runRound = () => {
+    console.log(`\nRound ${round + 1}:`);
     printGrid(grid);
-  }
+    grid = nextRound(grid);
+    round++;
+
+    if (isGridEmpty(grid)) {
+      console.log(`Todas las cellulas estan muertas!💀💀💀 GAME OVER.`);
+      clearInterval(interval);
+    }
+  };
+
+  runRound();
+
+  const interval = setInterval(runRound, 1000);
 };
 
-setInterval(() => game(), 4000);
+export const isGridEmpty = (grid) => {
+  for (let i = 0; i < row; i++) {
+    for (let j = 0; j < col; j++) {
+      if (grid[i][j] === 1) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+};
+
+game();
